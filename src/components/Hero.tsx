@@ -9,12 +9,12 @@ const Hero = () => {
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"
       >
-        <source src="/herovideo_melisa.mov" type="video/mp4" />
+        <source src="/herovideo2.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       
       {/* Overlay elegante */}
-      <div className="absolute inset-0 bg-black/40 z-10" />
+      <div className="absolute inset-0 bg-black/20 z-10" />
 
       <div className="relative z-20 text-center text-white px-4">
         <p className="font-sans text-[0.68rem] font-light tracking-[0.28em] uppercase text-[rgba(255,255,255,0.75)] mb-6 animate-fadeUp">
