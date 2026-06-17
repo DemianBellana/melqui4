@@ -1,29 +1,60 @@
 const PhotographySection = () => {
-  const photos = [
+  const categories = [
     {
-      url: '/assets/photo/sports_1.avif',
-      category: 'Sports',
-      className: 'md:col-span-2 aspect-[16/10]'
+      title: 'Sports',
+      photos: [
+        '/assets/photo/sports/IMG_7081.AVIF',
+        '/assets/photo/sports/IMG_7082.AVIF',
+        '/assets/photo/sports/IMG_7083.AVIF',
+        '/assets/photo/sports/IMG_7084.AVIF',
+        '/assets/photo/sports/IMG_7085.AVIF',
+        '/assets/photo/sports/IMG_7086.AVIF',
+        '/assets/photo/sports/IMG_7087.AVIF',
+        '/assets/photo/sports/IMG_7088.AVIF',
+        '/assets/photo/sports/IMG_7089.AVIF',
+      ]
     },
     {
-      url: '/assets/photo/portraits_1.avif',
-      category: 'Portraits',
-      className: 'aspect-[3/4]'
+      title: 'Travel',
+      photos: [
+        '/assets/photo/travel/IMG_7126.AVIF',
+        '/assets/photo/travel/IMG_7127.AVIF',
+        '/assets/photo/travel/IMG_7128.AVIF',
+        '/assets/photo/travel/IMG_7129.AVIF',
+        '/assets/photo/travel/IMG_7130.AVIF',
+        '/assets/photo/travel/IMG_7131.AVIF',
+        '/assets/photo/travel/IMG_7132.AVIF',
+        '/assets/photo/travel/IMG_7133.AVIF',
+        '/assets/photo/travel/IMG_7134.AVIF',
+        '/assets/photo/travel/IMG_7135.AVIF',
+        '/assets/photo/travel/IMG_7136.AVIF',
+        '/assets/photo/travel/IMG_7137.AVIF',
+      ]
     },
     {
-      url: '/assets/photo/travel_1.avif',
-      category: 'Travel',
-      className: 'aspect-[3/4]'
+      title: 'Portraits',
+      photos: [
+        '/assets/photo/portraits/IMG_7150.AVIF',
+        '/assets/photo/portraits/IMG_7152.AVIF',
+        '/assets/photo/portraits/IMG_7153.AVIF',
+        '/assets/photo/portraits/IMG_7154.AVIF',
+        '/assets/photo/portraits/IMG_7155.AVIF',
+        '/assets/photo/portraits/IMG_7156.AVIF',
+      ]
     },
     {
-      url: '/assets/photo/events_1.avif',
-      category: 'Events',
-      className: 'aspect-[3/4]'
-    },
-    {
-      url: '/assets/photo/travel_1.avif', // Reutilizando para completar el grid
-      category: 'Lifestyle',
-      className: 'md:col-span-2 aspect-[16/10]'
+      title: 'Events',
+      photos: [
+        '/assets/photo/events/IMG_7103.AVIF',
+        '/assets/photo/events/IMG_7104.AVIF',
+        '/assets/photo/events/IMG_7105.AVIF',
+        '/assets/photo/events/IMG_7106.AVIF',
+        '/assets/photo/events/IMG_7107.AVIF',
+        '/assets/photo/events/IMG_7108.AVIF',
+        '/assets/photo/events/IMG_7109.AVIF',
+        '/assets/photo/events/IMG_7110.AVIF',
+        '/assets/photo/events/IMG_7111.AVIF',
+      ]
     }
   ];
 
@@ -38,18 +69,23 @@ const PhotographySection = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-[1200px] mx-auto">
-        {photos.map((photo, index) => (
-          <div key={index} className={`relative overflow-hidden group ${photo.className}`}>
-            <img 
-              src={photo.url} 
-              alt={photo.category} 
-              className="w-full h-full object-cover block transition-transform duration-700 ease-in-out brightness-[0.95] group-hover:scale-[1.05]"
-            />
-            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-              <span className="font-serif text-white text-xl italic tracking-widest">
-                {photo.category}
-              </span>
+      <div className="space-y-24 max-w-[1400px] mx-auto">
+        {categories.map((cat) => (
+          <div key={cat.title}>
+            <h3 className="font-serif text-2xl mb-8 border-l-2 border-accent pl-4 text-dark/80">
+              {cat.title}
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {cat.photos.map((photo, idx) => (
+                <div key={idx} className="relative aspect-[3/4] overflow-hidden group bg-dark/5">
+                  <img 
+                    src={photo} 
+                    alt={`${cat.title} ${idx + 1}`} 
+                    className="w-full h-full object-cover block transition-transform duration-700 ease-in-out brightness-[0.98] group-hover:scale-[1.1]"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         ))}
