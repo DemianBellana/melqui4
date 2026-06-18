@@ -1,88 +1,188 @@
 import { useState, useRef } from 'react';
+import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
 
 const About = () => {
+  const frameRef = useRef(null);
+  const videoRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(videoRef.current.muted);
-    }
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x, { stiffness: 100, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 100, damping: 20 });
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ['5deg', '-5deg']);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ['-7deg', '7deg']);
+
+  const handleMouseMove = (e) => {
+    if (!frameRef.current) return;
+    const rect = frameRef.current.getBoundingClientRect();
+    x.set((e.clientX - rect.left) / rect.width - 0.5);
+    y.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handleMouseLeave = () => { x.set(0); y.set(0); };
+
+  const togglePlay = (e) => {
+    e.stopPropagation();
+    const vid = videoRef.current;
+    if (!vid) return;
+    if (vid.paused) { vid.play(); setPlaying(true); }
+    else            { vid.pause(); setPlaying(false); }
+  };
+
+  const toggleMute = (e) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    videoRef.current.muted = !videoRef.current.muted;
+    setIsMuted(videoRef.current.muted);
   };
 
   return (
     <section id="about" className="grid grid-cols-1 lg:grid-cols-2 min-h-[85vh] bg-dark overflow-hidden">
-      {/* Columna Izquierda: iPhone Mockup con Video e Interfaz de Reel */}
-      <div className="relative flex items-center justify-center py-20 lg:py-0 bg-[#080808]">
-        <div className="relative w-[300px] md:w-[360px] aspect-[9/18.5] z-10">
-          
-          {/* Imagen del iPhone Mockup (Capa base) */}
-          <img 
-            src="/assets/iphone_mockup.png" 
-            alt="iPhone Mockup" 
-            className="absolute inset-0 w-full h-full object-contain z-10"
-          />
-          
-          {/* Contenedor del Video (Capa superior, tapando la pantalla naranja) */}
-          <div className="absolute top-[2.2%] left-[6.5%] right-[6.5%] bottom-[2.2%] overflow-hidden rounded-[2.5rem] md:rounded-[3.2rem] bg-black z-20 shadow-inner">
-            
-            {/* Video de fondo */}
-            <video
-              ref={videoRef}
-              autoPlay
-              loop
-              muted={isMuted}
-              playsInline
-              className="w-full h-full object-cover scale-[1.01]"
-            >
-              <source src="/herovideo_melisa.mov" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
 
-            {/* Interfaz estilo Instagram Reel Overlays */}
-            <div className="absolute inset-0 z-30 flex flex-col justify-between p-4 text-white pointer-events-none">
-              {/* Top Icons */}
-              <div className="flex justify-between items-start mt-6 px-1">
-                <button 
-                  onClick={toggleMute}
-                  className="bg-black/30 backdrop-blur-md rounded-full p-1.5 border border-white/10 pointer-events-auto hover:bg-black/50 transition-colors"
-                >
-                  {isMuted ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                  )}
-                </button>
-                <div className="bg-black/30 backdrop-blur-md rounded-lg p-1.5 border border-white/10">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                </div>
+      {/* Columna Izquierda: iPhone CSS puro igual que VideoWork */}
+      <div className="relative flex items-center justify-center py-20 lg:py-0 bg-[#080808]">
+
+        <motion.div
+          ref={frameRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{ rotateX, rotateY, perspective: 1000, transformStyle: 'preserve-3d' }}
+          whileHover={{ scale: 1.03, y: -8 }}
+          transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+          className="relative z-10"
+        >
+          {/* Outer shell */}
+          <div style={{
+            width: '240px',
+            height: '500px',
+            borderRadius: '42px',
+            background: 'linear-gradient(145deg, #2a2a2a 0%, #111 40%, #1a1a1a 100%)',
+            padding: '3px',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.4)',
+            position: 'relative',
+          }}>
+            {/* Inner bezel */}
+            <div style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: '40px',
+              background: '#0a0a0a',
+              overflow: 'hidden',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+            }}>
+              {/* Status bar + notch */}
+              <div style={{ height: '32px', background: '#000', flexShrink: 0, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '80px', height: '20px', background: '#000', borderRadius: '0 0 14px 14px', position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 10 }} />
               </div>
 
-              {/* Sidebar Interaction Icons */}
-              <div className="flex flex-col items-end gap-6 mb-12 mr-1">
-                <div className="flex flex-col items-center gap-1.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                  <span className="text-[10px] font-semibold drop-shadow-lg">82.4k</span>
+              {/* Video + overlays */}
+              <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }} onClick={togglePlay}>
+
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  loop
+                  muted={isMuted}
+                  playsInline
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', cursor: 'pointer' }}
+                >
+                  <source src="/herovideo_melisa.mov" type="video/mp4" />
+                </video>
+
+                {/* Reel overlay UI */}
+                <div style={{ position: 'absolute', inset: 0, zIndex: 30, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '16px', color: 'white', pointerEvents: 'none' }}>
+                  {/* Top bar */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '8px' }}>
+                    <button
+                      onClick={toggleMute}
+                      style={{ background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(8px)', borderRadius: '50%', padding: '6px', border: '1px solid rgba(255,255,255,0.1)', pointerEvents: 'auto', cursor: 'pointer', color: 'white', display: 'flex' }}
+                    >
+                      {isMuted ? (
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+                        </svg>
+                      ) : (
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                        </svg>
+                      )}
+                    </button>
+                    <div style={{ background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(8px)', borderRadius: '8px', padding: '6px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Sidebar icons */}
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '20px', marginBottom: '24px', marginRight: '4px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                      </svg>
+                      <span style={{ fontSize: '9px', fontWeight: 600 }}>82.4k</span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14c.9 0 1.8.2 2.6.6L21 3l-1.4 5.5L21 11.5z"/>
+                      </svg>
+                      <span style={{ fontSize: '9px', fontWeight: 600 }}>1.2k</span>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                      </svg>
+                      <span style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.05em' }}>Share</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-col items-center gap-1.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-14c.9 0 1.8.2 2.6.6L21 3l-1.4 5.5L21 11.5z"></path></svg>
-                  <span className="text-[10px] font-semibold drop-shadow-lg">1.2k</span>
-                </div>
-                <div className="flex flex-col items-center gap-1.5">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                  <span className="text-[10px] font-semibold drop-shadow-lg tracking-wider">Share</span>
-                </div>
+
+                {/* Play/pause overlay */}
+                <motion.div
+                  animate={{ opacity: playing ? 0 : 1 }}
+                  transition={{ duration: 0.2 }}
+                  style={{
+                    position: 'absolute', inset: 0, zIndex: 40,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: playing ? 'transparent' : 'rgba(0,0,0,0.15)',
+                    pointerEvents: playing ? 'none' : 'auto',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {!playing && (
+                    <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="#111"><polygon points="5,3 19,12 5,21"/></svg>
+                    </div>
+                  )}
+                </motion.div>
+
+                {/* Screen glare */}
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%)', pointerEvents: 'none' }} />
+              </div>
+
+              {/* Home indicator */}
+              <div style={{ height: '24px', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: '60px', height: '4px', background: '#333', borderRadius: '2px' }} />
               </div>
             </div>
+
+            {/* Side buttons */}
+            <div style={{ position: 'absolute', left: '-4px', top: '80px',  width: '4px', height: '28px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', left: '-4px', top: '118px', width: '4px', height: '44px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', left: '-4px', top: '172px', width: '4px', height: '44px', background: '#2a2a2a', borderRadius: '2px 0 0 2px' }} />
+            <div style={{ position: 'absolute', right: '-4px', top: '110px', width: '4px', height: '64px', background: '#2a2a2a', borderRadius: '0 2px 2px 0' }} />
           </div>
-        </div>
-        
-        {/* Glow efecto detrás del iPhone */}
+        </motion.div>
+
+        {/* Glow detrás del iPhone */}
         <div className="absolute w-[400px] h-[400px] bg-accent/10 blur-[120px] rounded-full z-0" />
       </div>
 
-      {/* Columna Derecha: Texto descriptivo */}
+      {/* Columna Derecha: Texto */}
       <div className="flex flex-col justify-center px-6 py-14 lg:px-24 lg:py-24 text-white bg-[#111] relative z-10">
         <span className="text-[0.62rem] font-light tracking-[0.28em] uppercase text-accent mb-6">
           Sobre Mí
@@ -90,7 +190,6 @@ const About = () => {
         <h2 className="font-serif text-[clamp(2.5rem,4vw,3.5rem)] font-light leading-[1.18] text-white mb-8">
           Melisa <em className="italic text-accent">Quiroga</em>
         </h2>
-        
         <div className="space-y-6">
           <p className="text-[1.05rem] font-light leading-[1.8] text-[rgba(255,255,255,0.75)] max-w-[45ch]">
             Soy editora de video y creadora de contenido apasionada por contar historias visuales que conecten. Mi enfoque combina técnica cinematográfica con un ritmo dinámico adaptado a las tendencias actuales.
@@ -99,7 +198,6 @@ const About = () => {
             Desde la captura aérea con drones hasta la edición minuciosa de reels, busco siempre la excelencia visual y narrativa en cada proyecto en el que participo.
           </p>
         </div>
-
         <div className="mt-14 flex items-center gap-5">
           <div className="h-px w-16 bg-accent/50" />
           <span className="text-[0.7rem] font-light tracking-[0.35em] uppercase text-accent/80">
@@ -107,9 +205,9 @@ const About = () => {
           </span>
         </div>
       </div>
+
     </section>
   );
-
 };
 
 export default About;
