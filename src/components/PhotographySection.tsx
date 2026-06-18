@@ -52,21 +52,36 @@ const CategoryCarousel = ({ photos, title, onImageClick, globalOffset }: {
 
   if (!isMobile) {
     return (
-      <div className="photo-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {photos.map((photo, idx) => (
-          <div 
-            key={idx} 
-            className="photo-card relative aspect-[3/4] overflow-hidden group bg-dark/5 cursor-pointer"
-            onClick={() => onImageClick(globalOffset + idx)}
-          >
-            <img 
-              src={photo} 
-              alt={`${title} ${idx + 1}`} 
-              className="w-full h-full object-cover block transition-transform duration-700 ease-in-out brightness-[0.98] group-hover:scale-[1.1]"
-              loading="lazy"
-            />
-          </div>
-        ))}
+      <div className="photo-grid columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+        {photos.map((photo, idx) => {
+          // Diferentes ratios para crear el efecto "desordenado"
+          const ratios = ['aspect-[3/4]', 'aspect-square', 'aspect-[4/5]', 'aspect-[2/3]'];
+          const ratio = ratios[idx % ratios.length];
+          
+          // Desplazamientos verticales para romper la línea horizontal
+          const offsets = ['', 'md:mt-12', 'md:-mt-8', 'md:mt-6'];
+          const offset = offsets[idx % offsets.length];
+
+          return (
+            <div 
+              key={idx} 
+              className={`photo-card relative ${ratio} ${offset} break-inside-avoid mb-4 overflow-hidden group bg-dark/5 cursor-pointer shadow-sm hover:shadow-xl transition-shadow duration-500`}
+              onClick={() => onImageClick(globalOffset + idx)}
+            >
+              <img 
+                src={photo} 
+                alt={`${title} ${idx + 1}`} 
+                className="w-full h-full object-cover block transition-transform duration-700 ease-in-out brightness-[0.98] group-hover:scale-[1.1]"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-dark/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                <span className="text-white/80 text-xs tracking-[0.2em] uppercase font-light border-b border-white/30 pb-1">
+                  Ver detalle
+                </span>
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -134,41 +149,40 @@ const PhotographySection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    // Solo aplicar en desktop
-    if (window.innerWidth < 768) return;
-
     const categoryBlocks = gsap.utils.toArray('.category-block');
     
     categoryBlocks.forEach((block: any) => {
       const title = block.querySelector('.category-title');
-      const cards = block.querySelectorAll('.photo-card');
+      // En desktop son .photo-card, en mobile es el contenedor del carrusel
+      const content = block.querySelector('.photo-grid') || block.querySelector('.relative.overflow-hidden');
 
       // Animación del título de categoría
       gsap.from(title, {
         scrollTrigger: {
           trigger: title,
-          start: 'top 90%',
+          start: 'top 92%',
           toggleActions: 'play none none reverse'
         },
-        x: -50,
+        x: -30,
         opacity: 0,
-        duration: 1,
+        duration: 0.8,
         ease: 'power3.out'
       });
 
-      // Animación de las fotos (stagger)
-      gsap.from(cards, {
-        scrollTrigger: {
-          trigger: block,
-          start: 'top 80%',
-          toggleActions: 'play none none reverse'
-        },
-        y: 60,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'power2.out'
-      });
+      // Animación del contenido (fotos o carrusel)
+      if (content) {
+        gsap.from(content, {
+          scrollTrigger: {
+            trigger: content,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse'
+          },
+          y: 40,
+          opacity: 0,
+          duration: 1,
+          ease: 'power2.out'
+        });
+      }
     });
 
     // Animación del encabezado de sección
