@@ -27,8 +27,8 @@ const About = () => {
     e.stopPropagation();
     const vid = videoRef.current;
     if (!vid) return;
-    if (vid.paused) { vid.play(); setPlaying(true); }
-    else            { vid.pause(); setPlaying(false); }
+    if (vid.paused) { vid.play(); }
+    else            { vid.pause(); }
   };
 
   const toggleMute = (e) => {
@@ -88,6 +88,8 @@ const About = () => {
                   loop
                   muted={isMuted}
                   playsInline
+                  onPlay={() => setPlaying(true)}
+                  onPause={() => setPlaying(false)}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', cursor: 'pointer' }}
                 >
                   <source src="/herovideo_melisa.mov" type="video/mp4" />
