@@ -6,78 +6,30 @@ const Hero = () => {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    // Animación de letras para el primer renglón (entra desde izquierda)
     gsap.from('.char-left', {
-      x: -100,
-      rotationY: 90,
-      rotationZ: -20,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.03,
-      ease: 'power3.out',
-      delay: 0.5
+      x: -100, rotationY: 90, rotationZ: -20, opacity: 0,
+      duration: 1, stagger: 0.03, ease: 'power3.out', delay: 0.5
     });
-    
-    // Animación de letras para el segundo renglón (entra desde derecha)
     gsap.from('.char-right', {
-      x: 100,
-      rotationY: -90,
-      rotationZ: 20,
-      opacity: 0,
-      duration: 1,
-      stagger: 0.03,
-      ease: 'power3.out',
-      delay: 0.5
+      x: 100, rotationY: -90, rotationZ: 20, opacity: 0,
+      duration: 1, stagger: 0.03, ease: 'power3.out', delay: 0.5
     });
-
-    gsap.from('.hero-subtitle', {
-      y: 20,
-      opacity: 0,
-      duration: 1,
-      ease: 'power2.out',
-      delay: 0.3
-    });
-
-    gsap.from('.hero-desc', {
-      y: 20,
-      opacity: 0,
-      duration: 1,
-      ease: 'power2.out',
-      delay: 1.5
-    });
-
-    gsap.from('.hero-cta', {
-      scale: 0.9,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'back.out(1.7)',
-      delay: 1.8
-    });
+    gsap.from('.hero-subtitle', { y: 20, opacity: 0, duration: 1, ease: 'power2.out', delay: 0.3 });
+    gsap.from('.hero-desc',     { y: 20, opacity: 0, duration: 1, ease: 'power2.out', delay: 1.5 });
+    gsap.from('.hero-cta',      { scale: 0.9, opacity: 0, duration: 0.8, ease: 'back.out(1.7)', delay: 1.8 });
   }, { scope: container });
 
-  const renderLetters = (text: string, className: string) => {
-    return text.split('').map((char, i) => (
-      <span key={i} className={`${className} inline-block whitespace-pre`}>
-        {char}
-      </span>
+  const renderLetters = (text: string, className: string) =>
+    text.split('').map((char, i) => (
+      <span key={i} className={`${className} inline-block whitespace-pre`}>{char}</span>
     ));
-  };
 
   return (
     <section id="inicio" ref={container} className="h-screen relative flex items-center justify-center overflow-hidden">
-      {/* Video Background - Reel Corto Automático */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      >
+      <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0">
         <source src="/herovideo2.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
       </video>
-      
-      {/* Overlay elegante */}
+
       <div className="absolute inset-0 bg-black/20 z-10" />
 
       <div className="relative z-20 text-center text-white px-4 perspective-1000">
@@ -92,19 +44,20 @@ const Hero = () => {
             {renderLetters("Content Creator", "char-right")}
           </div>
         </h1>
-        <div className="hero-desc inline-block mb-11">
-          <p className="font-sans text-[0.7rem] font-medium tracking-[0.22em] uppercase text-dark bg-white/90 backdrop-blur-sm px-6 py-2.5 rounded-full border border-pink-100 shadow-[0_8px_30px_rgba(255,182,193,0.3)]">
+        <div className="hero-desc flex justify-center mb-11">
+          <p className="font-sans text-[0.58rem] md:text-[0.7rem] font-medium tracking-[0.18em] md:tracking-[0.22em] uppercase text-dark bg-white/90 backdrop-blur-sm px-6 py-2.5 rounded-full border border-pink-100 shadow-[0_8px_30px_rgba(255,182,193,0.3)] whitespace-nowrap">
             Dinámica <span className="text-pink-400 mx-1">·</span> Creatividad <span className="text-pink-400 mx-1">·</span> Historias que impactan
           </p>
         </div>
-        <a 
-          href="#reels" 
+        <a
+          href="#reels"
           className="hero-cta inline-block text-[0.68rem] font-light tracking-[0.2em] uppercase text-white border border-[rgba(255,255,255,0.55)] px-10 py-4 no-underline transition-all duration-300 hover:bg-[rgba(255,255,255,0.12)] hover:border-[rgba(255,255,255,0.8)]"
         >
           Ver Portfolio
         </a>
       </div>
-      
+
+      {/* Scroll indicator — centrado */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 opacity-0 animate-[fadeUp_1s_ease-out_2s_forwards]">
         <span className="text-[0.6rem] tracking-[0.2em] uppercase text-[rgba(255,255,255,0.55)]">
           Scroll
@@ -114,6 +67,5 @@ const Hero = () => {
     </section>
   );
 };
-
 
 export default Hero;
