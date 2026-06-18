@@ -101,43 +101,62 @@ const Contact = () => {
           </div>
         </div>
 
-        <form className="flex flex-col gap-6 bg-cream p-8 md:p-12 border border-[rgba(160,140,120,0.1)] shadow-sm" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[0.62rem] font-light tracking-[0.2em] uppercase text-light">Nombre</label>
-              <input type="text" className="bg-transparent border-none border-b border-[rgba(90,82,72,0.3)] py-2 font-sans text-[0.88rem] font-light text-dark outline-none focus:border-accent" />
+        <form className="flex flex-col gap-8 bg-cream p-8 md:p-12 border border-[rgba(160,140,120,0.15)] shadow-[0_20px_40px_rgba(0,0,0,0.03)]" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="flex flex-col gap-2 group">
+              <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-accent/80 transition-colors group-focus-within:text-accent">Nombre</label>
+              <input 
+                type="text" 
+                placeholder="Tu nombre completo"
+                className="bg-transparent border-b border-[rgba(90,82,72,0.2)] py-2.5 font-sans text-[0.9rem] font-light text-dark outline-none transition-all focus:border-accent placeholder:text-mid/30" 
+              />
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[0.62rem] font-light tracking-[0.2em] uppercase text-light">Email</label>
-              <input type="email" className="bg-transparent border-none border-b border-[rgba(90,82,72,0.3)] py-2 font-sans text-[0.88rem] font-light text-dark outline-none focus:border-accent" />
+            <div className="flex flex-col gap-2 group">
+              <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-accent/80 transition-colors group-focus-within:text-accent">Email</label>
+              <input 
+                type="email" 
+                placeholder="tu@email.com"
+                className="bg-transparent border-b border-[rgba(90,82,72,0.2)] py-2.5 font-sans text-[0.9rem] font-light text-dark outline-none transition-all focus:border-accent placeholder:text-mid/30" 
+              />
             </div>
           </div>
           
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[0.62rem] font-light tracking-[0.2em] uppercase text-light">Tipo de Proyecto</label>
-            <select className="bg-transparent border-none border-b border-[rgba(90,82,72,0.3)] py-2 font-sans text-[0.88rem] font-light text-dark outline-none focus:border-accent appearance-none rounded-none">
-              <option value="">Selecciona uno...</option>
-              <option>Edición de Reels</option>
-              <option>Video Institucional / Storytelling</option>
-              <option>Drone Work</option>
-              <option>Fotografía</option>
-              <option>Otro</option>
-            </select>
+          <div className="flex flex-col gap-2 group relative">
+            <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-accent/80 transition-colors group-focus-within:text-accent">Tipo de Proyecto</label>
+            <div className="relative">
+              <select className="w-full bg-transparent border-b border-[rgba(90,82,72,0.2)] py-2.5 font-sans text-[0.9rem] font-light text-dark outline-none focus:border-accent appearance-none rounded-none cursor-pointer">
+                <option value="" className="bg-cream">Selecciona una opción...</option>
+                <option className="bg-cream">Edición de Reels</option>
+                <option className="bg-cream">Video Institucional / Storytelling</option>
+                <option className="bg-cream">Drone Work</option>
+                <option className="bg-cream">Fotografía</option>
+                <option className="bg-cream">Otro</option>
+              </select>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none text-accent/50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[0.62rem] font-light tracking-[0.2em] uppercase text-light">Mensaje</label>
-            <textarea className="bg-transparent border-none border-b border-[rgba(90,82,72,0.3)] py-2 font-sans text-[0.88rem] font-light text-dark outline-none focus:border-accent resize-none min-h-[80px]" />
+          <div className="flex flex-col gap-2 group">
+            <label className="text-[0.62rem] font-medium tracking-[0.2em] uppercase text-accent/80 transition-colors group-focus-within:text-accent">Mensaje</label>
+            <textarea 
+              placeholder="¿En qué puedo ayudarte?"
+              className="bg-transparent border-b border-[rgba(90,82,72,0.2)] py-2.5 font-sans text-[0.9rem] font-light text-dark outline-none transition-all focus:border-accent resize-none min-h-[100px] placeholder:text-mid/30" 
+            />
           </div>
 
           <button 
             type="submit" 
-            className={`font-sans text-[0.68rem] font-light tracking-[0.2em] uppercase px-11 py-4 border-none transition-all duration-300 self-start mt-4 ${
-              isSent ? 'bg-accent text-cream cursor-default' : 'bg-dark text-cream hover:bg-accent'
+            className={`group relative overflow-hidden font-sans text-[0.7rem] font-medium tracking-[0.25em] uppercase px-12 py-4 transition-all duration-500 self-start mt-4 ${
+              isSent ? 'bg-accent text-cream' : 'bg-dark text-cream hover:bg-accent'
             }`}
             disabled={isSent}
           >
-            {isSent ? 'Mensaje Enviado ✓' : 'Enviar Mensaje'}
+            <span className="relative z-10">{isSent ? 'Mensaje Enviado ✓' : 'Enviar Mensaje'}</span>
+            {!isSent && (
+              <div className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)]" />
+            )}
           </button>
         </form>
       </div>
