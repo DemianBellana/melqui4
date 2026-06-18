@@ -92,9 +92,11 @@ const Hero = () => {
             {renderLetters("Content Creator", "char-right")}
           </div>
         </h1>
-        <p className="hero-desc font-sans text-[0.75rem] font-extralight tracking-[0.22em] uppercase text-[rgba(255,255,255,0.7)] mb-11">
-          Dinámica · Creatividad · Historias que impactan
-        </p>
+        <div className="hero-desc inline-block mb-11">
+          <p className="font-sans text-[0.7rem] font-medium tracking-[0.22em] uppercase text-dark bg-white/90 backdrop-blur-sm px-6 py-2.5 rounded-full border border-pink-100 shadow-[0_8px_30px_rgba(255,182,193,0.3)]">
+            Dinámica <span className="text-pink-400 mx-1">·</span> Creatividad <span className="text-pink-400 mx-1">·</span> Historias que impactan
+          </p>
+        </div>
         <a 
           href="#reels" 
           className="hero-cta inline-block text-[0.68rem] font-light tracking-[0.2em] uppercase text-white border border-[rgba(255,255,255,0.55)] px-10 py-4 no-underline transition-all duration-300 hover:bg-[rgba(255,255,255,0.12)] hover:border-[rgba(255,255,255,0.8)]"
